@@ -28,14 +28,13 @@ export class UserController {
 
         try{
             let user = await new User(data).save()
+            res.send(user)
             //send email to user for verification when created
             await NodeMailer.SendMail({
                 to: [email],
                 subject: 'test',
                 html: `<h1>Your OTP is ${verification_token} </h1>`
             })
-
-            res.send(user);
         }
         catch(e){
             next(e)
@@ -79,6 +78,35 @@ export class UserController {
         catch(e){
             next(e) 
         }
-        }
-        
     }
+
+    static async resendVerificationEmail(req,res,next){
+            
+        const verification_token = Utils.generateVerificationToken()
+        const email = req.query.email
+        try{
+            const user: any = await User.findOneAndUpdate(
+                {email:email},
+                {
+                    verification_token: verification_token,
+                    verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME
+                }
+            );
+            if(user) {
+                await NodeMailer.SendMail({
+                    to: [email],
+                    subject: 'Resend email verification',
+                    html:`<h1>Your OTP is ${verification_token} </h1>`
+
+                });
+                res.json({success: true});
+            } else {
+                throw new Error('User doesn\'t exist')
+            }
+        }
+
+        catch(e){
+            next(e);
+        }
+    }
+}

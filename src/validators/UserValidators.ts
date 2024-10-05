@@ -1,10 +1,25 @@
 import { body, query, validationResult } from 'express-validator';
+import User from '../models/User';
 export class UserValidators{
     static signup(){
         return [
             body('name','Name is required').isString(),
             body('phone','phone number is required').isString(),
-            body('email','Email is required').isEmail(),
+            body('email','Email is required').isEmail()
+            .custom((email,{req}) => {
+                return User.findOne({
+                    email:email,
+                    //type: 'user'
+                }).then(user => {
+                    if(user) {
+                        throw new Error('User Already Exists');
+                    } else {
+                        return true
+                    }
+                }).catch(e => {
+                    throw new Error(e)
+                })
+            }),
             body('password','Password is required').isAlphanumeric()
                 .isLength({min:8, max:20})
                 .withMessage("Password must be between 8-20 characters"),
@@ -24,5 +39,9 @@ export class UserValidators{
             body('verification token','Email verification token is required is required').isString(),
             body('email','Email is required').isEmail(),
         ]   
+    }
+
+    static VerifyUserForResendEmail() {
+        return [query('email','Email is required').isEmail()]
     }
 }

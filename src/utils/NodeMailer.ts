@@ -1,12 +1,13 @@
 import * as nodeMailer from 'nodemailer'
 import * as SendGrid from 'nodemailer-sendgrid-transport'
+import { getEnvironmentVariables } from '../environments/environment'
 
 export class NodeMailer {
 
     private static initiateTransport() {
         return nodeMailer.createTransport(SendGrid({
             auth: {
-                api_key: `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`
+                api_key: getEnvironmentVariables().sendgrid_api_key
             }
         }))
     }
