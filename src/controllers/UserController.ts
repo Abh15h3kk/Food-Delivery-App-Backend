@@ -2,9 +2,10 @@ import User from "../models/User";
 import { body, query, validationResult } from 'express-validator';
 import { Utils } from "../utils/Utils";
 import { NodeMailer } from "../utils/NodeMailer";
+import { getEnvironmentVariables } from "../environments/environment";
 
 export class UserController {
-    
+
     static async signup(req,res,next) {
 
         const name = req.body.name;
@@ -15,25 +16,34 @@ export class UserController {
         const status = req.body.status;
         const verification_token = Utils.generateVerificationToken();
         
+
+        try{
+        const hash = await Utils.encryptPassword(req.body.password)
         const data = {
             name:name,
             email: email,
             verification_token:verification_token,
             verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME,
-            password: password,
+            password: hash,
             type: type,
             status: status,
             phone:phone
         };
-
-        try{
-            let user = await new User(data).save()
-            res.send(user)
-            //send email to user for verification when created
-            await NodeMailer.SendMail({
-                to: [email],
-                subject: 'test',
-                html: `<h1>Your OTP is ${verification_token} </h1>`
+        let user = await new User(data).save()
+        const payload = {
+            user_id: user._id,
+            email: user.email
+        }
+        const token = Utils.jwtSign(payload)
+        res.json({
+            token: token,
+            user: user
+        })
+        //send email to user for verification when created
+        await NodeMailer.SendMail({
+            to: [email],
+            subject: 'test',
+            html: `<h1>Your OTP is ${verification_token} </h1>`
             })
         }
         catch(e){
@@ -107,6 +117,30 @@ export class UserController {
 
         catch(e){
             next(e);
+        }
+    }
+
+    static async login(req,res,next){
+        const user = req.user
+        const password = req.query.password
+        const encrypt_password = user.password
+        const data = {
+            password: password,
+            encrypt_password: encrypt_password
+        }
+        try {
+            await Utils.comparePassword(data)
+            const payload = {
+                user_id: user._id,
+                email: user.email
+            }
+            const token = Utils.jwtSign(payload)
+            res.json({
+                token: token,
+                user: user
+            })
+        } catch(e){
+            next(e)
         }
     }
 }

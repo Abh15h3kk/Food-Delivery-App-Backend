@@ -44,4 +44,34 @@ export class UserValidators{
     static VerifyUserForResendEmail() {
         return [query('email','Email is required').isEmail()]
     }
+
+    static login(){
+        return [
+            query('email','Email is required').isEmail()
+            .custom((email,{req}) => {
+                return User.findOne({
+                    email:email,
+                    //type: 'user'
+                }).then(user => {
+                    if(user) {
+                        //changed the request
+                        req.user = user
+                        return true
+                    } else {
+                        throw('User doesn\'t exist')
+                    }
+                }).catch(e => {
+                    throw new Error(e)
+                })
+            }),
+            query('password','Password is required').isAlphanumeric()
+    
+            // .custom((value,{req}) => {
+            //     if(req.body.email) return true;
+            //     else{
+            //         throw new Error('Email is not available for validation');
+            //     }
+            // }),
+        ]
+    }
 }
