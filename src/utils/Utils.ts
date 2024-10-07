@@ -41,10 +41,4 @@ export class Utils {
             })
         })
     }
-
-    static jwtSign(payload, expiresIn: string = '7d'){
-        return Jwt.sign(payload,
-        getEnvironmentVariables().jwt_secret_key,
-        { expiresIn: expiresIn})
-    }
 }

@@ -3,6 +3,7 @@ import { body, query, validationResult } from 'express-validator';
 import { Utils } from "../utils/Utils";
 import { NodeMailer } from "../utils/NodeMailer";
 import { getEnvironmentVariables } from "../environments/environment";
+import { Jwt } from "../utils/Jwt";
 
 export class UserController {
 
@@ -34,7 +35,7 @@ export class UserController {
             user_id: user._id,
             email: user.email
         }
-        const token = Utils.jwtSign(payload)
+        const token = Jwt.jwtSign(payload)
         res.json({
             token: token,
             user: user
@@ -61,7 +62,7 @@ export class UserController {
 
     static async verify(req,res,next) {
         const verification_token = req.body.verification_token;
-        const email = req.body.email;
+        const email = req.user.email;
         try{
             const user = await User.findOneAndUpdate(
             {
@@ -91,9 +92,9 @@ export class UserController {
     }
 
     static async resendVerificationEmail(req,res,next){
-            
+        //res.send(req.decoded)
         const verification_token = Utils.generateVerificationToken()
-        const email = req.query.email
+        const email = req.user.email
         try{
             const user: any = await User.findOneAndUpdate(
                 {email:email},
@@ -134,7 +135,7 @@ export class UserController {
                 user_id: user._id,
                 email: user.email
             }
-            const token = Utils.jwtSign(payload)
+            const token = Jwt.jwtSign(payload)
             res.json({
                 token: token,
                 user: user

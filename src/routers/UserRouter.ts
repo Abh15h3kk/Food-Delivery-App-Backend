@@ -17,14 +17,14 @@ class UserRouter {
     }
     
     getRoutes() {
-        this.router.get('/send/verification/email',UserValidators.VerifyUserForResendEmail(),GlobalMiddleware.checkError,UserController.resendVerificationEmail)
+        this.router.get('/send/verification/email',GlobalMiddleware.auth,UserController.resendVerificationEmail)
         this.router.get('/login',UserValidators.login(),GlobalMiddleware.checkError,UserController.login)
     }
     postRoutes() {
         this.router.post('/signup',UserValidators.signup(),GlobalMiddleware.checkError,UserController.signup)
     }
     patchRoutes() {
-        this.router.patch('/verify',UserValidators.verifyUserEmail(),GlobalMiddleware.checkError,UserController.verify)
+        this.router.patch('/verify',UserValidators.verifyUser(),GlobalMiddleware.checkError,GlobalMiddleware.auth,UserController.verify)
     }
     putRoutes() {
 

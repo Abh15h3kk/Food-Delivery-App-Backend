@@ -34,15 +34,10 @@ export class UserValidators{
         ]
     }
 
-    static verifyUserEmail() {
+    static verifyUser() {
         return[
             body('verification token','Email verification token is required is required').isString(),
-            body('email','Email is required').isEmail(),
         ]   
-    }
-
-    static VerifyUserForResendEmail() {
-        return [query('email','Email is required').isEmail()]
     }
 
     static login(){
