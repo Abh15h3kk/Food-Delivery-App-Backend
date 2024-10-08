@@ -1,7 +1,10 @@
+import { Utils } from "../utils/Utils";
 import { Environment } from "./environment";
 
+Utils.dotenvConfigs()
+
 export const DevEnvironment: Environment =  {
-    db_uri: 'mongodb+srv://abh1sh3kverma:123456789aA@cluster0.of9w9.mongodb.net/FoodDeliveryApp?retryWrites=true&w=majority&appName=Cluster0',
-    jwt_secret_key : 'secretkey',
-    sendgrid_api_key: `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`,
+    db_uri: process.env.DEV_DB_URI,
+    jwt_secret_key : process.env.DEV_JWT_SECRET_KEY,
+    sendgrid_api_key: process.env.DEV_SENDGRIP_API_KEY ,
 }

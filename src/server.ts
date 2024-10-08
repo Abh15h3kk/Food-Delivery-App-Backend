@@ -4,6 +4,10 @@ import { getEnvironmentVariables } from './environments/environment';
 import UserRouter from './routers/UserRouter';
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
+import BannerRouter from './routers/BannerRouter';
+import * as dotenv from 'dotenv'
+import * as path from 'path'
+import { Utils } from './utils/Utils';
 
 export class Server {
 
@@ -18,10 +22,16 @@ public app: express.Application = express()
     }
 
     setConfigs() {
+        this.dotenvConfigs()
         this.connectMongoDB()
         this.allowCors()
         this.configureBodyParser()
         this.jsonParser
+    }
+
+    dotenvConfigs() {
+        //dotenv.config({path: path.resolve(__dirname, '../.env')})
+        Utils.dotenvConfigs()
     }
 
     connectMongoDB() {
@@ -47,7 +57,10 @@ public app: express.Application = express()
     }
 
     setRoutes() {
+        //Making the upload folder static, otherwise it won't allow to upload
+        this.app.use('/src/uploads', express.static('src/uploads'))
         this.app.use('/api/user',UserRouter)
+        this.app.use('/api/banner',BannerRouter)
     }
 
     error404Handler() {

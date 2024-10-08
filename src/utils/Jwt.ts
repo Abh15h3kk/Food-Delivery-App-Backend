@@ -4,9 +4,10 @@ import * as jwt from 'jsonwebtoken'
 
 export class Jwt {
     static jwtSign(payload, expiresIn: string = '7d'){
-        return jwt.sign(payload,
-        getEnvironmentVariables().jwt_secret_key,
-        { expiresIn: expiresIn})
+        return jwt.sign(
+            payload,
+            getEnvironmentVariables().jwt_secret_key,
+            { expiresIn: expiresIn})
     }
 
     static jwtVerify(token:string): Promise<any>{
