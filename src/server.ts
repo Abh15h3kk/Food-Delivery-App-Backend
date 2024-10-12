@@ -9,6 +9,7 @@ import * as dotenv from 'dotenv'
 import * as path from 'path'
 import { Utils } from './utils/Utils';
 import CityRouter from './routers/CityRouter';
+import RestuarantRouter from './routers/RestaurantRouter';
 
 export class Server {
 
@@ -63,6 +64,7 @@ public app: express.Application = express()
         this.app.use('/api/user',UserRouter)
         this.app.use('/api/banner',BannerRouter)
         this.app.use('/api/city',CityRouter)
+        this.app.use('/api/restaurant',RestuarantRouter)
     }
 
     error404Handler() {
