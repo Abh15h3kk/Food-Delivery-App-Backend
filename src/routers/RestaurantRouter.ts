@@ -18,6 +18,8 @@ class RestaurantRouter {
     
     getRoutes() {
         this.router.get('/nearbyRestaurants', GlobalMiddleware.auth,restaurantValidators.getNearbyRestaurant(),GlobalMiddleware.checkError ,RestaurantController.getNearbyRestaurants)
+        this.router.get('/searchNearbyRestaurants', GlobalMiddleware.auth,restaurantValidators.searchNearbyRestaurant(),GlobalMiddleware.checkError ,RestaurantController.searchNearbyRestaurants)
+        this.router.get('/getRestaurants', GlobalMiddleware.auth, GlobalMiddleware.adminRole,RestaurantController.getRestaurants)
     }
     postRoutes() {
         this.router.post('/create',GlobalMiddleware.auth, GlobalMiddleware.adminRole, new Utils().multer.single('restaurant'), restaurantValidators.addRestaurant(),GlobalMiddleware.checkError,RestaurantController.addRestaurant)

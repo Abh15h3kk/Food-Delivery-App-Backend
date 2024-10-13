@@ -10,6 +10,9 @@ import * as path from 'path'
 import { Utils } from './utils/Utils';
 import CityRouter from './routers/CityRouter';
 import RestuarantRouter from './routers/RestaurantRouter';
+import CategoryRouter from './routers/CategoryRouter';
+import ItemRouter from './routers/ItemRouter';
+
 
 export class Server {
 
@@ -65,6 +68,8 @@ public app: express.Application = express()
         this.app.use('/api/banner',BannerRouter)
         this.app.use('/api/city',CityRouter)
         this.app.use('/api/restaurant',RestuarantRouter)
+        this.app.use('/api/category',CategoryRouter)
+        this.app.use('/api/item',ItemRouter)
     }
 
     error404Handler() {

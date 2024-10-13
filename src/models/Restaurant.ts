@@ -24,8 +24,8 @@ interface Restaurant extends Document {
 }
 
 const restaurantSchema = new Schema<Restaurant>({
-  city_id: { type: Schema.Types.ObjectId, required: true },
-  user_id: { type: Schema.Types.ObjectId, required: true },
+  city_id: { type: Schema.Types.ObjectId, ref: 'cities', required: true },
+  user_id: { type: Schema.Types.ObjectId, ref: 'users', required: true },
   name: { type: String, required: true },
   short_name: { type: String, required: false },
   description: { type: String, required: false },
