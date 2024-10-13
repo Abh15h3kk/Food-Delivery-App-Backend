@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 import User from "../models/User";
 
 export class restaurantValidators {
@@ -22,7 +22,7 @@ export class restaurantValidators {
                     throw new Error(e)
                 })
             }),
-            body('cover','Cover image is required')
+            body('restaurant','Cover image is required')
             .custom((cover,{req}) => {
                 if(req.file) {
                     return true
@@ -44,5 +44,13 @@ export class restaurantValidators {
             body('cuisines',' Cuisines is required').isString(),
             body('city_id',' city is required').isString(),
         ] 
+    }
+
+    static getNearbyRestaurant() {
+        return [
+            query('lat','Latitude is required').isNumeric(),
+            query('lng','Longitude is required').isNumeric(),
+            query('radius','Radius is requires').isNumeric(),
+        ]
     }
 }

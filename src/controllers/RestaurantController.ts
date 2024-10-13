@@ -1,3 +1,4 @@
+import Banner from "../models/Banner";
 import Category from "../models/Category";
 import Restaurant from "../models/Restaurant"
 import User from "../models/User";
@@ -76,10 +77,67 @@ export class RestaurantController {
         }
     }
 
-    static async getRestaurants(req,res,next) {
+    static async getNearbyRestaurants(req,res,next) {
+        const data = req.query
+        //const METERS_PER_KM = 1000
+
         try{
-            const cities = await Restaurant.find({status:'active'})
-            res.send(cities)
+            const restaurants = await Restaurant.find(
+                {
+                    status:'active',
+                    location: {
+                        // $nearSphere:{
+                        //     $geometry: 
+                        //     {
+                        //         ype: "Point",
+                        //         coordinates: [parseFloat(data.lng), parseFloat(data.lat) ] 
+                        //     },
+                        //     $maxDistance: data.radius * METERS_PER_KM } 
+                        $geoWithin:{
+                            $centerSphere: [ 
+                                [ parseFloat(data.lng), parseFloat(data.lat) ],
+                                 parseFloat(data.radius)/6378.1
+                            ] 
+                        } 
+                    
+                    } 
+                }
+
+            )
+            res.send(restaurants)
+        } catch(e) {
+            next(e)
+        }
+    }
+
+    static async searchNearbyRestaurants(req,res,next) {
+        const data = req.query
+        //const METERS_PER_KM = 1000
+
+        try{
+            const restaurants = await Restaurant.find(
+                {
+                    status:'active',
+                    location: {
+                        // $nearSphere:{
+                        //     $geometry: 
+                        //     {
+                        //         ype: "Point",
+                        //         coordinates: [parseFloat(data.lng), parseFloat(data.lat) ] 
+                        //     },
+                        //     $maxDistance: data.radius * METERS_PER_KM } 
+                        $geoWithin:{
+                            $centerSphere: [ 
+                                [ parseFloat(data.lng), parseFloat(data.lat) ],
+                                 parseFloat(data.radius)/6378.1
+                            ] 
+                        } 
+                    
+                    } 
+                }
+
+            )
+            res.send(restaurants)
         } catch(e) {
             next(e)
         }

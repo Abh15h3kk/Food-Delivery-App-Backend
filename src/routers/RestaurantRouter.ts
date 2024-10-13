@@ -17,10 +17,10 @@ class RestaurantRouter {
     }
     
     getRoutes() {
-        this.router.get('/all/restaurants', GlobalMiddleware.auth, RestaurantController.getRestaurants)
+        this.router.get('/nearbyRestaurants', GlobalMiddleware.auth,restaurantValidators.getNearbyRestaurant(),GlobalMiddleware.checkError ,RestaurantController.getNearbyRestaurants)
     }
     postRoutes() {
-        this.router.post('/create',GlobalMiddleware.auth, GlobalMiddleware.adminRole, new Utils().multer.single('cover'), restaurantValidators.addRestaurant(),GlobalMiddleware.checkError,RestaurantController.addRestaurant)
+        this.router.post('/create',GlobalMiddleware.auth, GlobalMiddleware.adminRole, new Utils().multer.single('restaurant'), restaurantValidators.addRestaurant(),GlobalMiddleware.checkError,RestaurantController.addRestaurant)
     }
     patchRoutes() {
         
