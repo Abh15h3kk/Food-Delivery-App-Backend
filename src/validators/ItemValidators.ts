@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import Restaurant from "../models/Restaurant";
 import Category from "../models/Category";
 
@@ -42,6 +42,24 @@ export class ItemValidators {
             body('price',' price is required').isString(),
             body('veg','Item is veg or not is required').isString(),
 
+        ]
+    }
+
+    static getMenuItems() {
+        return [
+            param('restaurantId','Restaurant Id is required').isString()
+            .custom((restaurant_id,{req}) => {
+                return Restaurant.findById(restaurant_id).then(restaurant => {
+                    if(restaurant) {
+                        req.restaurant = restaurant
+                        return true
+                    } else {
+                        throw new Error('No such restaurant exists');
+                    }
+                }).catch(e => {
+                    throw new Error(e)
+                })
+            }),
         ]
     }
 }

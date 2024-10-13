@@ -19,7 +19,7 @@ class ItemRouter {
     }
     
     getRoutes() {
-        //this.router.get('/items',ItemController.getItems)
+        this.router.get('/menuItems/:restaurantId', GlobalMiddleware.auth, ItemValidators.getMenuItems(),GlobalMiddleware.checkError,ItemController.getMenu)
     }
     postRoutes() {
         this.router.post('/create',GlobalMiddleware.auth,GlobalMiddleware.adminRole,new Utils().multer.single('itemImages'),ItemValidators.addItem(),GlobalMiddleware.checkError,ItemController.addItem)
